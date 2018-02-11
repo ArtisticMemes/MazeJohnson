@@ -550,38 +550,51 @@ public class MazeJohnson
     }
     else if(action.equals("ripMap") || action.equals(customRip))
     {
-      ripMap(); // Print the contents of maze in map format
-      System.out.println(""); // spacer
-      System.out.println(""); // spacer
+      System.out.print(ripMap() + " \n");
     }
     else if(action.equals("save") || action.equals(customSave))
     {
+      
       boolean firstRun = true;
       if(!mazeHas('S').equals("") && !mazeHas('G').equals(""))
       {
-        do {
-          if(firstRun)
+        // Check that another map doesn't already have that data
+        String dataAlreadyIn = "@"; // @ is not allowed in a map name
+        for(int a = 0; a < maps.length && dataAlreadyIn == "@"; a++) // Not sure if I'm supposed to do this in a for loop
+        {
+          if(ripMap().equals(maps[1][a]))
           {
-            System.out.print("Enter the name of the map : \n");
-            firstRun = false;
+            dataAlreadyIn = maps[0][a];
           }
-          else
-          {
-            System.out.print
-              (
-               "You can not use @  or another map's name. \n" +
-               "Enter the name of the map : \n"
-              );
-          }
-          input = scan.nextLine();
-          if(exit())
-            return;
-        } while(input.contains("@") || mapNamed(input));
-        maps[0] = Arrays.copyOf(maps[0], maps[0].length + 1);
-        maps[0][maps[0].length - 1] = input;
-        maps[1] = Arrays.copyOf(maps[1], maps[1].length + 1);
-        maps[1][maps[1].length - 1] = ripMap();
-        populateFile();
+        }
+        if(dataAlreadyIn == "@")
+        {
+          do {
+            if(firstRun)
+            {
+              System.out.print("Enter the name of the map : \n");
+              firstRun = false;
+            }
+            else
+            {
+              System.out.print
+                (
+                 "You can not use @  or another map's name. \n" +
+                 "Enter the name of the map : \n"
+                );
+            }
+            input = scan.nextLine();
+            if(exit())
+              return;
+          } while(input.contains("@") || mapNamed(input));
+          maps[0] = Arrays.copyOf(maps[0], maps[0].length + 1);
+          maps[0][maps[0].length - 1] = input;
+          maps[1] = Arrays.copyOf(maps[1], maps[1].length + 1);
+          maps[1][maps[1].length - 1] = ripMap();
+          populateFile();
+        }
+        else
+          System.out.print("You have entered the same data as " + dataAlreadyIn + ", please edit the map");
       }
       else
         System.out.print("You must have a start point and goal to save. \n");
@@ -630,7 +643,6 @@ public class MazeJohnson
       if(a == 0)
         map += 'Z';
     }
-    System.out.println(map);
     return map;
   } // ripMap
   
